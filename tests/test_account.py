@@ -1,6 +1,5 @@
 import allure
 from helpers.order_flow import login
-from helpers.urls import ACCOUNT_URL, ORDER_HISTORY
 from pages.account_page import AccountPage
 
 
@@ -14,7 +13,7 @@ class TestAccount:
         page = AccountPage(driver)
         page.open()
 
-        assert ACCOUNT_URL in driver.current_url
+        assert page.is_opened()
 
 
     @allure.title("Переход в историю заказов")
@@ -26,7 +25,7 @@ class TestAccount:
         page.open()
         page.open_history()
 
-        assert ORDER_HISTORY in driver.current_url
+        assert page.is_history_opened()
 
 
     @allure.title("Выход из аккаунта")
@@ -38,4 +37,4 @@ class TestAccount:
         page.open()
         page.exit()
 
-        assert "/login" in driver.current_url
+        assert page.is_login_opened()
