@@ -14,26 +14,32 @@ class MainPage(BasePage):
     def open(self):
         self.driver.get(BASE_URL)
 
+
     @allure.step("Переключиться на конструктор бургеров")
     def open_constructor(self):
         self.click(MainPageLocators.CONSTRUCTOR)
+
 
     @allure.step("Проверить, что открыт конструктор")
     def is_constructor_active(self):
         return self.driver.current_url.rstrip("/") == BASE_URL.rstrip("/")    
 
+
     @allure.step("Открыть 'Ленту заказов'")
     def open_feed(self):
         self.click(MainPageLocators.FEED)
+
 
     @allure.step("Открыть 'Личный кабинет'")
     def open_account(self):
         self.click(MainPageLocators.ACCOUNT)
 
+
     @allure.step("Кликнуть на ингредиент")
     def click_ingredient(self):
         ingredient = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.INGREDIENT))
         self.driver.execute_script("arguments[0].click();", ingredient)
+
 
     @allure.step("Перетащить ингредиент в конструктор")
     def drag_ingredient(self, locator):
@@ -47,9 +53,11 @@ class MainPage(BasePage):
             .release() \
             .perform()
         
+
     @allure.step("Проверить открытие модалки ингредиента")
     def is_modal_open(self):
         return (len(self.driver.find_elements(*MainPageLocators.MODAL)) > 0 and self.driver.find_element(*MainPageLocators.MODAL).is_displayed())
+
 
     @allure.step("Закрыть модалку")
     def close_modal(self):
@@ -58,14 +66,17 @@ class MainPage(BasePage):
 
         WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(MainPageLocators.MODAL))
 
+
     @allure.step("Дождаться изменения счетчика ингредиентов")
     def wait_counter_change(self, old_value):
         WebDriverWait(self.driver, 10).until(lambda d: int(d.find_element(*MainPageLocators.COUNTER).text) > old_value)
+
 
     @allure.step("Получить значение счетчика ингредиентов")
     def get_counter_value(self):
         counter = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(MainPageLocators.COUNTER))
         return int(counter.text)
+
 
     @allure.step("Авторизоваться на сайте")
     def login(self, email, password):
@@ -81,9 +92,11 @@ class MainPage(BasePage):
 
         self.click(MainPageLocators.LOGIN_SUBMIT_BUTTON)
 
+
     @allure.step("Создать заказ")
     def create_order(self):
         self.click(MainPageLocators.ORDER_BUTTON)
+
 
     @allure.step("Дождаться появления номера заказа")
     def wait_order_number_ready(self):
@@ -94,6 +107,7 @@ class MainPage(BasePage):
                 and el.text.strip() != "9999"
             )
         )
+
 
     @allure.step("Получить номер заказа")
     def get_order_number(self):

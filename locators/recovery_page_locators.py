@@ -11,6 +11,6 @@ class RecoveryPageLocators:
 
     SHOW_PASSWORD = (By.XPATH, "//div[contains(@class,'input__icon-action')]")
 
-    PASSWORD_CONTAINER = (By.XPATH,"//div[contains(@class,'input_type_password')]")
+    PASSWORD_CONTAINER = (By.CSS_SELECTOR, "div.input.input_size_default")
 
     

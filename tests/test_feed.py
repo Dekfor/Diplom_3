@@ -1,8 +1,6 @@
 import allure
 from helpers.order_flow import create_order
 from pages.feed_page import FeedPage
-from locators.feed_page_locators import FeedPageLocators
-from selenium.webdriver.support.ui import WebDriverWait
 
 
 @allure.title("Лента заказов: открытие модалки заказа")
@@ -10,7 +8,7 @@ def test_order_modal_opens(driver):
     feed = FeedPage(driver)
     feed.open_feed()
 
-    WebDriverWait(driver, 10).until(lambda d: len(d.find_elements(*FeedPageLocators.ORDERS)) > 0)
+    feed.wait_orders_loaded()
 
     feed.click_first_order()
     assert feed.is_order_modal_open()
@@ -21,7 +19,7 @@ def test_user_orders_visible_in_feed(driver):
     feed = FeedPage(driver)
     feed.open_feed()
 
-    WebDriverWait(driver, 10).until(lambda d: len(d.find_elements(*FeedPageLocators.ORDERS)) > 0)
+    feed.wait_orders_loaded()
 
     assert len(feed.get_feed_orders_text()) > 0
 
