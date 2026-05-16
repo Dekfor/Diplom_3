@@ -1,3 +1,4 @@
+import allure
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
 from helpers.urls import BASE_URL
@@ -9,25 +10,32 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class MainPage(BasePage):
 
+    @allure.step("Открыть главную страницу")
     def open(self):
         self.driver.get(BASE_URL)
 
+    @allure.step("Переключиться на конструктор бургеров")
     def open_constructor(self):
         self.click(MainPageLocators.CONSTRUCTOR)
 
+    @allure.step("Проверить, что открыт конструктор")
     def is_constructor_active(self):
         return self.driver.current_url.rstrip("/") == BASE_URL.rstrip("/")    
 
+    @allure.step("Открыть 'Ленту заказов'")
     def open_feed(self):
         self.click(MainPageLocators.FEED)
 
+    @allure.step("Открыть 'Личный кабинет'")
     def open_account(self):
         self.click(MainPageLocators.ACCOUNT)
 
+    @allure.step("Кликнуть на ингредиент")
     def click_ingredient(self):
         ingredient = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.INGREDIENT))
         self.driver.execute_script("arguments[0].click();", ingredient)
 
+    @allure.step("Перетащить ингредиент в конструктор")
     def drag_ingredient(self, locator):
         ingredient = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locator))
 
@@ -39,25 +47,27 @@ class MainPage(BasePage):
             .release() \
             .perform()
         
+    @allure.step("Проверить открытие модалки ингредиента")
     def is_modal_open(self):
         return (len(self.driver.find_elements(*MainPageLocators.MODAL)) > 0 and self.driver.find_element(*MainPageLocators.MODAL).is_displayed())
-    
-    def wait_order_modal(self):
-        return WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located(MainPageLocators.MODAL))
 
+    @allure.step("Закрыть модалку")
     def close_modal(self):
         close_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.MODAL_CLOSE))
         self.driver.execute_script("arguments[0].click();", close_btn)
 
         WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(MainPageLocators.MODAL))
 
+    @allure.step("Дождаться изменения счетчика ингредиентов")
+    def wait_counter_change(self, old_value):
+        WebDriverWait(self.driver, 10).until(lambda d: int(d.find_element(*MainPageLocators.COUNTER).text) > old_value)
+
+    @allure.step("Получить значение счетчика ингредиентов")
     def get_counter_value(self):
         counter = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(MainPageLocators.COUNTER))
         return int(counter.text)
 
-    def wait_counter_change(self, old_value):
-        WebDriverWait(self.driver, 10).until(lambda d: int(d.find_element(*MainPageLocators.COUNTER).text) > old_value)
-
+    @allure.step("Авторизоваться на сайте")
     def login(self, email, password):
         self.click(MainPageLocators.LOGIN_BUTTON)
 
@@ -71,9 +81,11 @@ class MainPage(BasePage):
 
         self.click(MainPageLocators.LOGIN_SUBMIT_BUTTON)
 
+    @allure.step("Создать заказ")
     def create_order(self):
         self.click(MainPageLocators.ORDER_BUTTON)
 
+    @allure.step("Дождаться появления номера заказа")
     def wait_order_number_ready(self):
         WebDriverWait(self.driver, 20).until(
             lambda d: (
@@ -83,12 +95,8 @@ class MainPage(BasePage):
             )
         )
 
+    @allure.step("Получить номер заказа")
     def get_order_number(self):
         return self.driver.find_element(*MainPageLocators.ORDER_MODAL_NUMBER).text
 
-    def close_order_modal(self):
-        close_btn = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(MainPageLocators.MODAL_CLOSE))
-        self.driver.execute_script("arguments[0].click();", close_btn)
-
-        WebDriverWait(self.driver, 10).until(EC.invisibility_of_element_located(MainPageLocators.MODAL))
         
